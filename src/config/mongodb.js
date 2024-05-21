@@ -1,13 +1,11 @@
-const MONGODB_URI = 'mongodb+srv://nguyennanhcdd:PnQW6MfH48LIMHM7@cluster0.mhq0yqz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-const DATABASENAME = 'trellohoanganh'
-
 import { MongoClient, ServerApiVersion } from 'mongodb'
+import { env } from '~/config/environment'
 
 // initialize trelloDatabase as null at first ( becasue it has not connected yet)
 let trelloDatabaseInstance = null
 
 // initialize client instance to connect to mongodb server
-const mongoClientInstance = new MongoClient(MONGODB_URI, {
+const mongoClientInstance = new MongoClient(env.MONGODB_URI, {
   // lưu ý casci serverAPI có từ phiên bản MongoDB 5.0.0 trở lên, có thể không cần dùng nó,
   // còn nếu dùng nó là chúng ta sẽ chỉ định 1 cái stableAPI version của MongoDB
   serverApi: {
@@ -25,7 +23,7 @@ export const CONNECT_DB = async () => {
   await mongoClientInstance.connect()
 
   // if connection is successful, take out the database by the name and assign it to trelloDatabaseInstance
-  trelloDatabaseInstance = mongoClientInstance.db(DATABASENAME)
+  trelloDatabaseInstance = mongoClientInstance.db(env.DATABASE_NAME)
 }
 
 // make sure that this function ( GET_DB ) is called only when the connection to MongoDB is established
