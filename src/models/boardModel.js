@@ -47,9 +47,23 @@ const findOneById = async (id) => {
   }
 }
 
+// querry tông hợp aggregate để lấy toàn bộ columns và cards huộc về board
+const getDetails = async (id) => {
+  try {
+    // hôm nay tạm thời sẽ giống hàm findoneById - và sẽ tiếp tịc update ở phần aggrerate 
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({
+      _id: new ObjectId(String(id))
+    })
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNew,
-  findOneById
+  findOneById,
+  getDetails
 }
