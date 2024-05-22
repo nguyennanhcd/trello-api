@@ -10,7 +10,6 @@ const START_SERVER = () => {
 
   // enable req.body convert json to data
   app.use(express.json())
-  app.use(express.urlencoded({ extended: true }))
 
   // use api v1
   app.use('/v1', APIs_V1)

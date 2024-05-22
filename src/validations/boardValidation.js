@@ -27,11 +27,9 @@ const createNew = async (req, res, next) => {
   })
 
   try {
-    // console.log('req.body: ', req.body)
     // set abortEarly to false to continue printing the errors if there are more than 2 errors
     await correctCondition.validateAsync(req.body, { abortEarly: false })
-    // next()
-    res.status(StatusCodes.CREATED).json({ message: 'POST form validation: APIs create new boards' })
+    next()
   } catch (error) {
     res.status(StatusCodes.UNPROCESSABLE_ENTITY).json(
       {
