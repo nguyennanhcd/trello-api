@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-import ApiError from '~/utils/apiError'
+import ApiError from '~/utils/ApiError'
 
 const createNew = (req, res, next) => {
   try {
