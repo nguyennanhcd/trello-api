@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { boardService } from '~/services/boardService'
+import { findIndexById } from '~/models/boardModel'
 
 const createNew = async (req, res, next) => {
   try {
