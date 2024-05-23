@@ -1,6 +1,7 @@
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
+import { BOARD_TYPES } from '~/utils/constants'
 
 const createNew = async (req, res, next) => {
   /*
@@ -24,7 +25,8 @@ const createNew = async (req, res, next) => {
       'string.min': 'Description need to have at least 3 characters',
       'string.max': 'Description containing a maximum of 50 characters',
       'string.trim': 'Description must not have leading or trailing whitespace'
-    })
+    }),
+    type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required()
   })
 
   try {
