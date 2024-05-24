@@ -109,7 +109,7 @@ const update = async (boardId, updateData) => {
       { $set: updateData },
       { ReturnDocument: 'after' }
     )
-    return result || null
+    return result
   } catch (error) {
     throw new Error(error)
   }
