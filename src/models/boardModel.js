@@ -25,6 +25,9 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+// appoint ( chi dinh ) fields that we it to be updated
+const INVALID_UPDATE_FIELDS = ['_id', 'createdAt']
+
 const validateBeforeCreate = async ( data ) => {
   return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
@@ -49,7 +52,6 @@ const findOneById = async (id) => {
     throw new Error(error)
   }
 }
-
 
 // querry tông hợp aggregate để lấy toàn bộ columns và cards huộc về board
 const getDetails = async (id) => {
@@ -87,7 +89,27 @@ const pushColumnOrderIds = async (column) => {
       { $push: { columnOrderIds: new ObjectId(String(column._id)) } },
       { ReturnDocument: 'after' }
     )
-    return result.value || null
+    return result || null
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const update = async (boardId, updateData) => {
+  try {
+    // filter some fieldname that must not be updated
+    Object.keys(updateData).forEach(fieldName => {
+      if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
+        // in this line we can not use updateData.fieldName because fieldName is a variable
+        delete updateData[fieldName]
+      }
+    })
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(String(boardId)) },
+      { $set: updateData },
+      { ReturnDocument: 'after' }
+    )
+    return result || null
   } catch (error) {
     throw new Error(error)
   }
@@ -99,5 +121,6 @@ export const boardModel = {
   createNew,
   findOneById,
   getDetails,
-  pushColumnOrderIds
+  pushColumnOrderIds,
+  update
 }
