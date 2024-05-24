@@ -9,7 +9,6 @@ const createNew = async (req, res, next) => {
     // console.log('req.files: ', req.files)
     // console.log('req.cookies: ', req.cookies)
     // console.log('req.jwtDecoded: ', req.jwtDecoded)
-
     // Navigate data to the service layer
     const createBoard = await boardService.createNew(req.body)
 
@@ -27,7 +26,16 @@ const getDetails = async (req, res, next) => {
   } catch (error) { next(error) }
 }
 
+const update = async (req, res, next) => {
+  try {
+    const boardId = req.params.id
+    const updatedBoard = await boardService.update(boardId, req.body)
+    res.status(StatusCodes.OK).json(updatedBoard)
+  } catch (error) { next(error) }
+}
+
 export const boardController = {
   createNew,
-  getDetails
+  getDetails,
+  update
 }
