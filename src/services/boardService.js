@@ -4,6 +4,8 @@ import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import slugify from '~/utils/formatter'
 import { cloneDeep } from 'lodash'
+import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 
 const createNew = async (reqBody) => {
 
@@ -42,10 +44,10 @@ const getDetails = async (boardId) => {
 
     resBoard.columns.forEach(column => {
       // card.columnId.toString() là bởi vì ban đầu nó là kiểu objectId của mongoDb
-      // column.cards = resBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
+      column.cards = resBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
 
       // cách 2, cách dùng này là bởi vì ObjectId trong mongodb có hỗ trợ equals
-      column.cards = resBoard.cards.filter(card => card.columnId.equals(column._id))
+      // column.cards = resBoard.cards.filter(card => card.columnId.equals(column._id))
     })
 
     delete resBoard.cards
@@ -70,8 +72,34 @@ const update = async (boardId, reqBody) => {
   }
 }
 
+const moveCardToDifferentColumn = async (reqBody) => {
+  try {
+    //Step 1: Update cardOrderIds array of the first column that owns the card (  basically it's just remove the _id of that Card )
+    await columnModel.update(reqBody.prevColumnId, {
+      cardOrderIds: reqBody.prevCardOrderIds,
+      updatedAt: Date.now()
+    })
+
+    //Step 2: Update cardOrderIds of the next column that owns the card ( basically it's just add _id of card )
+    await columnModel.update(reqBody.nextColumnId, {
+      cardOrderIds: reqBody.nextCardOrderIds,
+      updatedAt: Date.now()
+    })
+
+    //Step 3: Update the new columnId field of the dragged card
+    cardModel.update(reqBody.nextColumnId, {
+      cardOrderIds: reqBody.nextCardOrderIds,
+      updatedAt: Date.now()
+    })
+    return { updateResult: 'Successfully' }
+  } catch (error) {
+    throw error
+  }
+}
+
 export const boardService = {
   createNew,
   getDetails,
-  update
+  update,
+  moveCardToDifferentColumn
 }
