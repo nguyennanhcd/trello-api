@@ -58,8 +58,9 @@ const update = async (cardId, updateData) => {
       }
     })
 
+    console.log('updateData: ', updateData)
     // đối với những dữ liệu liên quan đến ObjectId, biến đổi ở đây
-    if ( updateData.columnId) updateData.columnId = new ObjectId(String(updateData.columnId))
+    if (updateData.columnId) updateData.columnId = new ObjectId(String(updateData.columnId))
 
     const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(String(cardId)) },
