@@ -87,7 +87,7 @@ const pushColumnOrderIds = async (column) => {
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(String(column.boardId)) },
       { $push: { columnOrderIds: new ObjectId(String(column._id)) } },
-      { ReturnDocument: 'after' }
+      { returnDocument: 'after' }
     )
     return result || null
   } catch (error) {
@@ -113,7 +113,20 @@ const update = async (boardId, updateData) => {
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(String(boardId)) },
       { $set: updateData },
-      { ReturnDocument: 'after' }
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const pullColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(String(column.boardId)) },
+      { $pull: { columnOrderIds: new ObjectId(String(column._id)) } },
+      { returnDocument: 'after' }
     )
     return result
   } catch (error) {
@@ -128,5 +141,6 @@ export const boardModel = {
   findOneById,
   getDetails,
   pushColumnOrderIds,
-  update
+  update,
+  pullColumnOrderIds
 }
