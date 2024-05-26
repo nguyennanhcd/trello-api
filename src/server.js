@@ -21,10 +21,18 @@ const START_SERVER = () => {
   // middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, async () => {
-    // eslint-disable-next-line no-console
-    console.log(`Hello, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`)
-  })
+  if (env.BUILD_MODE === 'production')
+  {
+    app.listen(process.env.PORT, async () => {
+      // eslint-disable-next-line no-console
+      console.log(`Hello, I am running at PORT: ${process.env.PORT}`)
+    })
+  } else {
+    app.listen(env.APP_PORT, env.APP_HOST, async () => {
+      // eslint-disable-next-line no-console
+      console.log(`Hello, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`)
+    })
+  }
 
   // implement cleanup function before closing server
   exitHook(() => {
