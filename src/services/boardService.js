@@ -86,12 +86,14 @@ const moveCardToDifferentColumn = async (reqBody) => {
       updatedAt: Date.now()
     })
 
+    console.log(reqBody)
     //Step 3: Update the new columnId field of the dragged card
-    cardModel.update(reqBody.nextColumnId, {
-      cardOrderIds: reqBody.nextCardOrderIds,
+    cardModel.update(reqBody.currentCardId, {
+      columnId: reqBody.nextColumnId,
       updatedAt: Date.now()
     })
     return { updateResult: 'Successfully' }
+
   } catch (error) {
     throw error
   }
